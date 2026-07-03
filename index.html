@@ -178,8 +178,6 @@
     display:flex;align-items:flex-end;padding:18px;
     font-family:'Anton',sans-serif;
     transition:transform .5s cubic-bezier(.2,.8,.2,1);
-    background-size: cover !important;
-    background-position: center !important;
   }
   .card .tag{
     font-family:'JetBrains Mono',monospace;font-weight:600;font-size:11px;
@@ -192,10 +190,9 @@
     padding:6px 10px;border-radius:999px;
     display:flex;align-items:center;gap:6px;
   }
-  .card.c1{background: linear-gradient(rgba(6,7,9,0.3), rgba(6,7,9,0.5)), url('images/thumb1.jpg'); transform:rotate(-9deg) translate(-60px,10px); z-index:1;}
-  .card.c2{background: linear-gradient(rgba(6,7,9,0.2), rgba(6,7,9,0.4)), url('images/thumb2.jpg'); transform:rotate(6deg) translate(50px,-10px); z-index:2;}
-  .card.c3{background: linear-gradient(rgba(6,7,9,0.1), rgba(6,7,9,0.3)), url('images/thumb3.jpg'); transform:rotate(-2deg) translate(0,0); z-index:3; box-shadow:0 40px 80px -20px rgba(255,59,92,0.25);}
-  
+  .card.c1{background:linear-gradient(135deg,#1c1215,#2e0f19);transform:rotate(-9deg) translate(-60px,10px);z-index:1;}
+  .card.c2{background:linear-gradient(135deg,#0d1622,#0a242c);transform:rotate(6deg) translate(50px,-10px);z-index:2;}
+  .card.c3{background:linear-gradient(135deg,#150e22,#220f2e);transform:rotate(-2deg) translate(0,0);z-index:3;box-shadow:0 40px 80px -20px rgba(255,59,92,0.25);}
   .deck:hover .card.c1{transform:rotate(-14deg) translate(-90px,20px);}
   .deck:hover .card.c2{transform:rotate(10deg) translate(80px,-20px);}
   .deck:hover .card.c3{transform:rotate(0deg) translate(0,-10px) scale(1.02);}
@@ -216,7 +213,7 @@
   .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(0.16, 1, 0.3, 1), transform .8s cubic-bezier(0.16, 1, 0.3, 1);}
   .reveal.in{opacity:1;transform:translateY(0);}
 
-  /* ---------- BENTO GRID SHOWCASE ---------- */
+  /* ---------- BENTO GRID SHOWCASE (VIDEO EFFECT REMOVED) ---------- */
   .work-grid{
     display:grid;
     grid-template-columns:repeat(6, 1fr);
@@ -257,33 +254,31 @@
   }
   .work-card:hover .thumb img { transform: scale(1.04); }
 
+  /* Smooth dark gradient layer overlaying thumbnail bottom */
   .thumb::after{
     content:'';position:absolute;inset:0;z-index:2;
-    background:linear-gradient(to top, rgba(6,7,9,0.8) 0%, rgba(6,7,9,0) 60%);
+    background:linear-gradient(to top, rgba(6,7,9,0.9) 0%, rgba(6,7,9,0.3) 50%, rgba(6,7,9,0) 100%);
   }
   
-  .thumb .play{
-    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);
-    width:56px;height:56px;border-radius:50%;
-    background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);
-    display:flex;align-items:center;justify-content:center;
-    opacity:0;z-index:4;transition:all .35s ease;
+  .thumb-title{
+    font-family:'Inter',sans-serif;
+    font-weight: 800;
+    font-size:22px;
+    color:#fff;
+    text-transform:none;
+    line-height:1.2;
+    position:relative;
+    z-index:3;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
   }
-  .work-card:hover .thumb .play{opacity:1;transform:translate(-50%,-50%) scale(1);}
-  .thumb .play::after{
-    content:'';border-left:14px solid #fff;border-top:9px solid transparent;
-    border-bottom:9px solid transparent;margin-left:4px;
-  }
-  
-  .thumb-title{font-family:'Anton',sans-serif;font-size:24px;color:#fff;text-transform:uppercase;line-height:1.05;position:relative;z-index:3;}
   .thumb-badge{
     position:absolute;top:20px;left:20px;font-family:'JetBrains Mono',monospace;
-    font-size:10px;font-weight:600;background:rgba(6,7,9,0.6);backdrop-filter:blur(4px);padding:5px 10px;border-radius:6px;letter-spacing:.5px;z-index:3;
+    font-size:10px;font-weight:600;background:rgba(6,7,9,0.75);backdrop-filter:blur(4px);padding:5px 10px;border-radius:6px;letter-spacing:.5px;z-index:3;
     border:1px solid rgba(255,255,255,0.05);
   }
   .thumb-ctr{
     position:absolute;top:20px;right:20px;font-family:'JetBrains Mono',monospace;font-size:11px;
-    color:var(--cyan);background:rgba(6,7,9,0.6);backdrop-filter:blur(4px);padding:5px 10px;border-radius:999px;font-weight:600;z-index:3;
+    color:var(--cyan);background:rgba(6,7,9,0.75);backdrop-filter:blur(4px);padding:5px 10px;border-radius:999px;font-weight:600;z-index:3;
     border:1px solid rgba(255,255,255,0.05);
   }
   .work-meta{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;background:transparent;margin-top:auto;}
@@ -751,6 +746,7 @@
   </div>
 </header>
 
+<!-- WORK SECTION (UPDATED TEXTS & FIXES) -->
 <section id="work">
   <div class="section-head reveal">
     <div>
@@ -761,68 +757,69 @@
   </div>
   
   <div class="work-grid">
+    <!-- Card 1 -->
     <div class="work-card bento-large reveal">
       <div class="thumb">
-        <img src="images/thumb1.jpg" alt="Design 1">
+        <!-- Dual fallback for case sensitivity -->
+        <img src="images/thumb1.jpg" onerror="this.onerror=null; this.src='Images/thumb1.jpg';" alt="Design 1">
         <span class="thumb-badge">EXPLAINER</span>
         <span class="thumb-ctr">+41%</span>
-        <div class="play"></div>
-        <div class="thumb-title">Why This Changes<br>Everything</div>
+        <div class="thumb-title">Why This Changes Everything</div>
       </div>
       <div class="work-meta"><span class="niche">Whiteboard explainer</span><span class="arrow">↗</span></div>
     </div>
 
+    <!-- Card 2 -->
     <div class="work-card bento-medium reveal">
       <div class="thumb">
-        <img src="images/thumb2.jpg" alt="Design 2">
+        <img src="images/thumb2.jpg" onerror="this.onerror=null; this.src='Images/thumb2.jpg';" alt="Design 2">
         <span class="thumb-badge">FINANCE</span>
         <span class="thumb-ctr">+29%</span>
-        <div class="play"></div>
-        <div class="thumb-title">The $10K<br>Mistake</div>
+        <div class="thumb-title">The $10K Mistake</div>
       </div>
       <div class="work-meta"><span class="niche">Money &amp; finance</span><span class="arrow">↗</span></div>
     </div>
 
+    <!-- Card 3 -->
     <div class="work-card bento-medium reveal">
       <div class="thumb">
-        <img src="images/thumb3.jpg" alt="Design 3">
+        <img src="images/thumb3.jpg" onerror="this.onerror=null; this.src='Images/thumb3.jpg';" alt="Design 3">
         <span class="thumb-badge">TECH</span>
         <span class="thumb-ctr">+52%</span>
-        <div class="play"></div>
-        <div class="thumb-title">I Tried It For<br>30 Days</div>
+        <div class="thumb-title">I Tried It For 30 Days</div>
       </div>
       <div class="work-meta"><span class="niche">Tech review</span><span class="arrow">↗</span></div>
     </div>
 
+    <!-- Card 4 -->
     <div class="work-card bento-large reveal">
       <div class="thumb">
-        <img src="images/thumb4.jpg" alt="Design 4">
+        <img src="images/thumb4.jpg" onerror="this.onerror=null; this.src='Images/thumb4.jpg';" alt="Design 4">
         <span class="thumb-badge">EDUCATION</span>
         <span class="thumb-ctr">+33%</span>
-        <div class="play"></div>
-        <div class="thumb-title">Explained in<br>60 Seconds</div>
+        <div class="thumb-title">Explained in 60 Seconds</div>
       </div>
       <div class="work-meta"><span class="niche">Education</span><span class="arrow">↗</span></div>
     </div>
 
+    <!-- Card 5 -->
     <div class="work-card bento-small reveal">
       <div class="thumb">
-        <img src="images/thumb5.jpg" alt="Design 5">
+        <img src="images/thumb5.jpg" onerror="this.onerror=null; this.src='Images/thumb5.jpg';" alt="Design 5">
         <span class="thumb-badge">VLOG</span>
         <span class="thumb-ctr">+18%</span>
-        <div class="play"></div>
-        <div class="thumb-title">The Truth<br>Nobody Says</div>
+        <div class="thumb-title">The Truth Nobody Says</div>
       </div>
       <div class="work-meta"><span class="niche">Personal brand</span><span class="arrow">↗</span></div>
     </div>
 
+    <!-- Card 6 -->
     <div class="work-card bento-small reveal">
       <div class="thumb">
-        <img src="images/thumb6.jpg" alt="Design 6">
+        <img src="images/thumb6.jpg" onerror="this.onerror=null; this.src='Images/thumb6.jpg';" alt="Design 6">
         <span class="thumb-badge">DEEP DIVE</span>
         <span class="thumb-ctr">+46%</span>
-        <div class="play"></div>
-        <div class="thumb-title">How It Actually<br>Works</div>
+        <div class="thumb-title">How It Actually Works</div>
       </div>
       <div class="work-meta"><span class="niche">Documentary</span><span class="arrow">↗</span></div>
     </div>
@@ -947,70 +944,55 @@
   </div>
 </section>
 
+<!-- CONTACT SECTION -->
 <section id="contact" class="contact-section">
-  <div class="contact-card">
-    <div class="contact-badge">ONLINE &amp; AVAILABLE</div>
-    <h2 class="contact-title">Let's make videos click.</h2>
-    <p class="contact-subtitle">Get high-performance designs tailored for your brand.</p>
+  <div class="contact-card reveal">
+    <div class="contact-badge">Contact</div>
+    <h2 class="contact-title">Get In Touch</h2>
+    <p class="contact-subtitle">Have a project in mind? I'll respond within 5 hours.</p>
     
-    <form class="contact-form">
-      <input type="text" placeholder="Your Name" class="contact-input" required>
-      <input type="email" placeholder="Your Email" class="contact-input" required>
-      <textarea placeholder="Tell us about your channel..." class="contact-input" required></textarea>
-      <button type="submit" class="contact-btn">Send Message</button>
+    <form id="contactForm" class="contact-form" action="https://formspree.io/f/maqgljoj" method="POST">
+      <input type="text" name="name" class="contact-input" placeholder="Your Name" required>
+      <input type="email" name="email" class="contact-input" placeholder="Your@email.com" required>
+      <input type="url" name="youtube_channel" class="contact-input" placeholder="Link to Your Youtube Channel" required>
+      <input type="text" name="budget" class="contact-input" placeholder="What is your budget per thumbnail (USD)" required>
+      <textarea name="message" class="contact-input" placeholder="Anything Else I Should Know?"></textarea>
+      <button type="submit" id="submitBtn" class="contact-btn">Send message</button>
     </form>
     
-    <a href="mailto:hello@savongraphic.com" class="contact-footer-email">hello@savongraphic.com</a>
+    <a href="mailto:savongraphics@gmail.com" class="contact-footer-email">savongraphics@gmail.com</a>
   </div>
 </section>
 
 <footer>
-  <div>&copy; 2026 Savongraphic. All rights reserved.</div>
+  <div>© 2026 Savongraphic Studio</div>
   <div class="footer-links">
-    <a href="#work">Work</a>
-    <a href="#process">Process</a>
-    <a href="#toolkit">Toolkit</a>
+    <a href="#">Instagram</a>
+    <a href="#">Behance</a>
+    <a href="#">Twitter</a>
   </div>
 </footer>
 
 <script>
-  // Smooth scroll and basic animation triggers if needed
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in');
-      }
-    });
-  }, { threshold: 0.1 });
-  
-  reveals.forEach(reveal => observer.observe(reveal));
+  // Form Submission Handling
+  const form = document.getElementById("contactForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const toast = document.getElementById("successToast");
 
-  // Custom Cursor
-  const cursor = document.querySelector('.custom-cursor');
-  document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-    cursor.style.opacity = 1;
-  });
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault(); 
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Sending...";
+    const formData = new FormData(form);
 
-  const hoverElements = document.querySelectorAll('a, .work-card, .btn-primary, .btn-ghost, .nav-cta, .process-card, .tool-row, .contact-input, .contact-btn');
-  hoverElements.forEach(elem => {
-    elem.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-    elem.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-  });
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
 
-  // Card Process Mouse Effect
-  const processCards = document.querySelectorAll('.process-card');
-  processCards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
-    });
-  });
-</script>
-</body>
-</html>
+      if (response.ok) {
+        toast.classList.add("show");
+        form.reset(); 
+        setTimeout(() => { toast.classList.removeNormally I can help with things like this, but I don't seem to have access to that content. You can try again or ask me for something else.
