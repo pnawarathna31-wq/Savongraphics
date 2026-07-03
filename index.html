@@ -6,7 +6,6 @@
 <title>Savongraphic — Premium Thumbnail Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Premium Framer-Style Typography -->
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -62,7 +61,7 @@
   }
 
   @media (min-width: 901px) {
-    body, a, .work-card, .btn-primary, .btn-ghost, .nav-cta, .process-card, .tool-row, .contact-input, .contact-btn {
+    body, a, .work-card, .btn-primary, .btn-ghost, .nav-cta, .process-card, .tool-row, .contact-input, .contact-select, .contact-btn {
       cursor: none !important;
     }
   }
@@ -553,7 +552,7 @@
     color: #6b7280;
     font-size: 15px;
     line-height: 1.5;
-    max-width: 320px;
+    max-width: 380px;
     margin-bottom: 40px;
   }
 
@@ -564,7 +563,7 @@
     gap: 14px;
   }
 
-  .contact-input {
+  .contact-input, .contact-select {
     width: 100%;
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -575,13 +574,27 @@
     color: #111215;
     outline: none;
     transition: all 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .contact-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 24px center;
+    background-size: 16px;
+    color: #111215;
+  }
+
+  .contact-select:invalid, .contact-select option[value=""] {
+    color: #9ca3af;
   }
 
   .contact-input::placeholder {
     color: #9ca3af;
   }
 
-  .contact-input:focus {
+  .contact-input:focus, .contact-select:focus {
     border-color: #111215;
     background: #fafafa;
   }
@@ -701,7 +714,6 @@
 <div class="noise"></div>
 <div class="custom-cursor"></div>
 
-<!-- Success Toast -->
 <div id="successToast" class="toast-notification">
   <div class="toast-icon">✓</div>
   <span>Message sent successfully!</span>
@@ -950,14 +962,25 @@
 <section id="contact" class="contact-section">
   <div class="contact-card">
     <div class="contact-badge">ONLINE &amp; AVAILABLE</div>
-    <h2 class="contact-title">Let's make videos click.</h2>
-    <p class="contact-subtitle">Get high-performance designs tailored for your brand.</p>
+    <h2 class="contact-title">Let's make videos popular.</h2>
+    <p class="contact-subtitle">Ready to boost your CTR? Send us a message with your details and let's optimize your growth.</p>
     
-    <form class="contact-form">
-      <input type="text" placeholder="Your Name" class="contact-input" required>
-      <input type="email" placeholder="Your Email" class="contact-input" required>
-      <textarea placeholder="Tell us about your channel..." class="contact-input" required></textarea>
-      <button type="submit" class="contact-btn">Send Message</button>
+    <form class="contact-form" id="contactForm" action="https://formspree.io/f/maqgljoj" method="POST">
+      <input type="text" name="name" class="contact-input" placeholder="Your Name" required>
+      <input type="email" name="email" class="contact-input" placeholder="Your Email" required>
+      
+      <input type="url" name="channel_link" class="contact-input" placeholder="YouTube Channel Link (e.g., https://youtube.com/...)" required>
+      
+      <select name="budget" class="contact-select" required>
+        <option value="" disabled selected>Select Your Monthly Budget</option>
+        <option value="Under $100">Under $100</option>
+        <option value="$100 - $300">$100 - $300</option>
+        <option value="$300 - $700">$300 - $700</option>
+        <option value="$700+">$700+</option>
+      </select>
+      
+      <textarea name="message" class="contact-input" placeholder="Tell us about your project or required thumbnail style..." required></textarea>
+      <button type="submit" id="submitBtn" class="contact-btn">Send Message</button>
     </form>
     
     <a href="mailto:savongraphics@gmail.com" class="contact-footer-email">savongraphics@gmail.com</a>
@@ -965,51 +988,78 @@
 </section>
 
 <footer>
-  <div>&copy; 2026 Savongraphic. All rights reserved.</div>
+  <p>© 2026 Savongraphic. All rights reserved.</p>
   <div class="footer-links">
-    <a href="#work">Work</a>
-    <a href="#process">Process</a>
-    <a href="#toolkit">Toolkit</a>
+    <a href="#">Twitter</a>
+    <a href="#">Instagram</a>
+    <a href="#">Privacy</a>
   </div>
 </footer>
 
 <script>
-  // Smooth scroll and basic animation triggers if needed
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in');
-      }
-    });
-  }, { threshold: 0.1 });
-  
-  reveals.forEach(reveal => observer.observe(reveal));
-
   // Custom Cursor
   const cursor = document.querySelector('.custom-cursor');
   document.addEventListener('mousemove', (e) => {
     cursor.style.left = e.clientX + 'px';
     cursor.style.top = e.clientY + 'px';
-    cursor.style.opacity = 1;
   });
 
-  const hoverElements = document.querySelectorAll('a, .work-card, .btn-primary, .btn-ghost, .nav-cta, .process-card, .tool-row, .contact-input, .contact-btn');
-  hoverElements.forEach(elem => {
-    elem.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-    elem.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+  document.querySelectorAll('a, .work-card, .btn-primary, .btn-ghost, .nav-cta, .process-card, .tool-row, .contact-input, .contact-select, .contact-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
   });
 
-  // Card Process Mouse Effect
-  const processCards = document.querySelectorAll('.process-card');
-  processCards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
+  // Reveal Animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
     });
+  }, { threshold: 0.1 });
+  
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Process Card Mouse Effect
+  document.querySelectorAll('.process-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+      card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+    });
+  });
+
+  // AJAX Form Submission (No Redirect, Shows Premium Success Toast)
+  const form = document.getElementById('contactForm');
+  const toast = document.getElementById('successToast');
+  const submitBtn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault(); // Prevents page reload or Formspree redirect page
+    
+    const data = new FormData(form);
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Sending...";
+
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        // Success Toast Animation Trigger
+        toast.classList.add('show');
+        form.reset();
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      alert("Oops! Network error. Please try again.");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Send Message";
+    }
   });
 </script>
 </body>
