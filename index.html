@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Savongraphic — Premium Thumbnail Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Premium Framer-Style Typography -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #060709;
+    --surface: rgba(20, 24, 33, 0.4);
+    --surface-hover: rgba(30, 37, 51, 0.6);
+    --coral: #FF3B5C;
+    --cyan: #3BE8FF;
+    --text: #F5F6FA;
+    --muted: #8E95A5;
+    --line: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.04);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--coral);color:var(--bg);}
+
+  a{color:inherit;text-decoration:none;}
+
+  .noise{
+    position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- CUSTOM CURSOR ---------- */
+  .custom-cursor {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--coral);
+    border-radius: 50%;
+    position: fixed;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                height 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                background-color 0.2s ease, 
+                border-color 0.2s ease;
+  }
+  .custom-cursor.hovered {
+    width: 48px;
+    height: 48px;
+    background-color: rgba(255, 59, 92, 0.12);
+    border-color: var(--coral);
+  }
+
+  @media (min-width: 901px) {
+    body, a, .work-card, .btn-primary, .btn-ghost, .nav-cta, .process-card, .tool-row, .contact-input, .contact-btn {
+      cursor: none !important;
+    }
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:24px 48px;
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    background:rgba(6, 7, 9, 0.6);
+    border-bottom:1px solid var(--line);
+    transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .logo{
+    font-family:'Anton',sans-serif;
+    font-size:22px;letter-spacing:0.8px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .logo .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--coral);
+    box-shadow:0 0 16px var(--coral);
+  }
+  .nav-links{display:flex;gap:40px;font-size:14px;font-weight:500;color:var(--muted);}
+  .nav-links a{position:relative;padding:4px 0;transition:color .25s ease;}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{
+    font-size:13px;font-weight:600;letter-spacing:.2px;
+    padding:11px 24px;border-radius:999px;
+    background:var(--text);color:var(--bg);
+    transition:transform .2s ease, background .3s ease;
+  }
+  .nav-cta:hover{transform:translateY(-2px);background:var(--coral);color:#fff;}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    min-height:100vh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:160px 48px 100px;
+    position:relative;
+    overflow:hidden;
+  }
+  .glow{
+    position:absolute;border-radius:50%;filter:blur(140px);opacity:.25;pointer-events:none;
+  }
+  .glow-1{width:600px;height:600px;background:var(--coral);top:-180px;right:-100px;}
+  .glow-2{width:500px;height:500px;background:var(--cyan);bottom:-200px;left:-100px;opacity:.15;}
+
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;margin-bottom:24px;
+    opacity:0;animation:fadeUp .7s ease forwards .1s;
+  }
+  .eyebrow::before{content:'';width:20px;height:1px;background:var(--cyan);}
+
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center;}
+
+  h1.headline{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(48px,6.8vw,96px);
+    line-height:0.95;
+    letter-spacing:.2px;
+    text-transform:uppercase;
+    opacity:0;animation:fadeUp .8s ease forwards .25s;
+  }
+  h1.headline .line{display:block;}
+  h1.headline .fill{
+    background:linear-gradient(100deg, var(--coral), #fff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
+  .hero-sub{
+    margin-top:28px;max-width:480px;
+    color:var(--muted);font-size:16px;line-height:1.6;
+    font-weight:400;
+    opacity:0;animation:fadeUp .8s ease forwards .4s;
+  }
+  .hero-actions{margin-top:40px;display:flex;gap:16px;align-items:center;opacity:0;animation:fadeUp .8s ease forwards .55s;}
+  .btn-primary{
+    font-weight:600;font-size:14px;padding:16px 32px;border-radius:999px;
+    background:var(--text);color:var(--bg);
+    display:inline-flex;align-items:center;gap:10px;
+    transition:all .25s ease;
+  }
+  .btn-primary:hover{transform:translateY(-3px);background:var(--coral);color:#fff;}
+  .btn-ghost{
+    font-weight:600;font-size:14px;color:var(--text);
+    display:inline-flex;align-items:center;gap:8px;
+    border-bottom:1px solid var(--line);padding-bottom:2px;
+  }
+  .stats-row{display:flex;gap:48px;margin-top:64px;opacity:0;animation:fadeUp .8s ease forwards .7s;}
+  .stat-num{font-family:'Anton',sans-serif;font-size:36px;color:var(--text);letter-spacing:0.5px;}
+  .stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  /* ---------- Hero Visual Deck ---------- */
+  .deck{
+    position:relative;height:420px;
+    opacity:0;animation:fadeUp 1s ease forwards .5s;
+  }
+  .card{
+    position:absolute;inset:0;margin:auto;
+    width:340px;height:191px;border-radius:16px;
+    border:1px solid var(--line);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.7);
+    display:flex;align-items:flex-end;padding:18px;
+    font-family:'Anton',sans-serif;
+    transition:transform .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .card .tag{
+    font-family:'JetBrains Mono',monospace;font-weight:600;font-size:11px;
+    background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:5px 9px;border-radius:6px;
+  }
+  .card .ctr{
+    position:absolute;top:16px;right:16px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+    background:rgba(0,0,0,0.6);color:var(--cyan);
+    padding:6px 10px;border-radius:999px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .card.c1{background:linear-gradient(135deg,#1c1215,#2e0f19);transform:rotate(-9deg) translate(-60px,10px);z-index:1;}
+  .card.c2{background:linear-gradient(135deg,#0d1622,#0a242c);transform:rotate(6deg) translate(50px,-10px);z-index:2;}
+  .card.c3{background:linear-gradient(135deg,#150e22,#220f2e);transform:rotate(-2deg) translate(0,0);z-index:3;box-shadow:0 40px 80px -20px rgba(255,59,92,0.25);}
+  .deck:hover .card.c1{transform:rotate(-14deg) translate(-90px,20px);}
+  .deck:hover .card.c2{transform:rotate(10deg) translate(80px,-20px);}
+  .deck:hover .card.c3{transform:rotate(0deg) translate(0,-10px) scale(1.02);}
+
+  /* ---------- SECTION SHARED ---------- */
+  section{padding:140px 48px;position:relative;}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;gap:40px;}
+  .section-eyebrow{
+    font-family:'JetBrains Mono',monospace;color:var(--coral);font-size:12px;
+    letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;display:block;
+  }
+  h2.section-title{
+    font-family:'Anton',sans-serif;font-size:clamp(32px,4vw,56px);
+    text-transform:uppercase;line-height:1.05;letter-spacing:0.5px;
+  }
+  .section-desc{color:var(--muted);font-size:15px;max-width:340px;line-height:1.6;}
+
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(0.16, 1, 0.3, 1), transform .8s cubic-bezier(0.16, 1, 0.3, 1);}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ---------- BENTO GRID SHOWCASE ---------- */
+  .work-grid{
+    display:grid;
+    grid-template-columns:repeat(6, 1fr);
+    gap:24px;
+  }
+  .work-card{
+    background:var(--surface);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border:1px solid var(--glass-border);
+    border-radius:24px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .work-card.bento-large { grid-column: span 4; }
+  .work-card.bento-medium { grid-column: span 2; }
+  .work-card.bento-small { grid-column: span 3; }
+
+  .work-card:hover{
+    transform:translateY(-6px) scale(1.01);
+    background:var(--surface-hover);
+    border-color:rgba(255,59,92,0.3);
+    box-shadow:0 30px 60px -15px rgba(0,0,0,0.5);
+  }
+  
+  .thumb{
+    aspect-ratio:16/9;position:relative;display:flex;align-items:flex-end;
+    padding:24px;overflow:hidden;
+    background:#0e1118;
+  }
+  .thumb img {
+    position: absolute;inset: 0;width: 100%;height: 100%;
+    object-fit: cover;z-index: 1;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .work-card:hover .thumb img { transform: scale(1.04); }
+
+  .thumb::after{
+    content:'';position:absolute;inset:0;z-index:2;
+    background:linear-gradient(to top, rgba(6,7,9,0.8) 0%, rgba(6,7,9,0) 60%);
+  }
+  
+  .thumb .play{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);
+    width:56px;height:56px;border-radius:50%;
+    background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;z-index:4;transition:all .35s ease;
+  }
+  .work-card:hover .thumb .play{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  .thumb .play::after{
+    content:'';border-left:14px solid #fff;border-top:9px solid transparent;
+    border-bottom:9px solid transparent;margin-left:4px;
+  }
+  
+  .thumb-title{font-family:'Anton',sans-serif;font-size:24px;color:#fff;text-transform:uppercase;line-height:1.05;position:relative;z-index:3;}
+  .thumb-badge{
+    position:absolute;top:20px;left:20px;font-family:'JetBrains Mono',monospace;
+    font-size:10px;font-weight:600;background:rgba(6,7,9,0.6);backdrop-filter:blur(4px);padding:5px 10px;border-radius:6px;letter-spacing:.5px;z-index:3;
+    border:1px solid rgba(255,255,255,0.05);
+  }
+  .thumb-ctr{
+    position:absolute;top:20px;right:20px;font-family:'JetBrains Mono',monospace;font-size:11px;
+    color:var(--cyan);background:rgba(6,7,9,0.6);backdrop-filter:blur(4px);padding:5px 10px;border-radius:999px;font-weight:600;z-index:3;
+    border:1px solid rgba(255,255,255,0.05);
+  }
+  .work-meta{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;background:transparent;margin-top:auto;}
+  .work-meta .niche{font-size:13px;color:var(--muted);font-weight:500;}
+  .work-meta .arrow{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;transition:.3s ease;font-size:12px;color:var(--muted);}
+  .work-card:hover .work-meta .arrow{background:#fff;border-color:#fff;color:#0B0D12;transform:rotate(45deg);}
+
+  /* ---------- BENTO PROCESS GRID ---------- */
+  .process{border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .process-card {
+    position: relative;
+    background: var(--surface);
+    border-radius: 24px;
+    padding: 48px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid var(--glass-border);
+    background-clip: padding-box;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+
+  .process-card:hover {
+    transform: translateY(-4px);
+    background: rgba(25, 30, 41, 0.5);
+  }
+
+  .process-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 24px;
+    padding: 2px;
+    background: radial-gradient(180px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(255, 59, 92, 0.8), transparent 80%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .process-card::after {
+    content: '';
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    top: calc(var(--mouse-y, 0px) - 70px);
+    left: calc(var(--mouse-x, 0px) - 70px);
+    background: radial-gradient(circle, rgba(255, 59, 92, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .process-card:hover::before,
+  .process-card:hover::after {
+    opacity: 1;
+  }
+
+  .process-num{
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--coral);font-weight:600;
+    position: relative; z-index: 2;
+  }
+  .process-name{
+    font-family:'Anton',sans-serif;font-size:28px;text-transform:uppercase;letter-spacing:0.5px;
+    position: relative; z-index: 2;
+  }
+  .process-desc{
+    color:var(--muted);font-size:15px;line-height:1.6;
+    position: relative; z-index: 2;
+  }
+
+  /* ---------- TOOLKIT CAPSULE PROGRESS SECTION ---------- */
+  .toolkit {
+    background: #080a0f;
+    border-bottom: 1px solid var(--line);
+  }
+  .toolkit-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 48px;
+  }
+  .toolkit-intro {
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto 56px;
+  }
+  .toolkit-intro p {
+    color: var(--muted);
+    font-size: 15px;
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+
+  .tool-row {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .tool-progress-bg {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: var(--progress-width, 0%);
+    background: linear-gradient(90deg, rgba(20, 24, 33, 0.2) 0%, rgba(255, 59, 92, 0.06) 100%);
+    border-right: 2px solid rgba(255, 59, 92, 0.3);
+    z-index: 1;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .tool-row:hover .tool-progress-bg {
+    background: linear-gradient(90deg, rgba(255, 59, 92, 0.04) 0%, rgba(255, 59, 92, 0.12) 100%);
+    border-right: 2px solid var(--coral);
+    box-shadow: 4px 0 16px rgba(255, 59, 92, 0.2);
+  }
+
+  .tool-row:hover {
+    border-color: rgba(255, 59, 92, 0.25);
+    transform: scale(1.01);
+  }
+
+  .tool-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .tool-icon {
+    width: 44px;
+    height: 44px;
+    background: #0d1117;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 15px;
+    font-family: 'Anton', sans-serif;
+  }
+  .tool-icon.ps { color: #31A8FF; }
+  .tool-icon.ai { color: #FF9A00; }
+  .tool-icon.ev { color: #81B441; }
+  .tool-icon.gpt { color: #10a37f; }
+  .tool-icon.nb { color: #FFE600; }
+
+  .tool-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .tool-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+  }
+  .tool-desc {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .tool-right {
+    position: relative;
+    z-index: 2;
+  }
+  .tool-perc {
+    width: 46px;
+    height: 46px;
+    background: rgba(6, 7, 9, 0.6);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    transition: all 0.3s ease;
+  }
+  .tool-row:hover .tool-perc {
+    border-color: var(--coral);
+    color: var(--coral);
+    background: #060709;
+    box-shadow: 0 0 12px rgba(255, 59, 92, 0.2);
+  }
+
+  /* ---------- MARQUEE ---------- */
+  .marquee-wrap{overflow:hidden;padding:40px 0;background:rgba(255,255,255,0.01);border-bottom:1px solid var(--line);}
+  .marquee{display:flex;gap:64px;white-space:nowrap;animation:marquee 25s linear infinite;width:max-content;}
+  .marquee span{
+    font-family:'Anton',sans-serif;font-size:36px;text-transform:uppercase;
+    color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.1);
+    display:flex;align-items:center;gap:64px;letter-spacing:1px;
+  }
+  .marquee span em{font-style:normal;color:transparent;-webkit-text-stroke:1px var(--coral);}
+  @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* ---------- PREMIUM FRAMER-STYLE CONTACT BOX ---------- */
+  .contact-section {
+    background: #f3f4f6;
+    padding: 120px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .contact-card {
+    background: #ffffff;
+    border-radius: 32px;
+    width: 100%;
+    max-width: 640px;
+    padding: 48px 40px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+  }
+
+  .contact-badge {
+    background: #1e1f22;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .contact-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 4vw, 44px);
+    color: #111215;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+  }
+
+  .contact-subtitle {
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 320px;
+    margin-bottom: 40px;
+  }
+
+  .contact-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .contact-input {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    padding: 16px 28px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: #111215;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .contact-input::placeholder {
+    color: #9ca3af;
+  }
+
+  .contact-input:focus {
+    border-color: #111215;
+    background: #fafafa;
+  }
+
+  textarea.contact-input {
+    border-radius: 24px;
+    resize: none;
+    height: 120px;
+  }
+
+  .contact-btn {
+    width: 100%;
+    background: #222326;
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+
+  .contact-btn:hover {
+    background: #111215;
+    transform: translateY(-1px);
+  }
+
+  .contact-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+  }
+
+  .contact-footer-email {
+    margin-top: 36px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: clamp(20px, 3vw, 28px);
+    color: #111215;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    transition: opacity 0.2s ease;
+  }
+  .contact-footer-email:hover {
+    opacity: 0.7;
+  }
+
+  /* ---------- SUCCESS TOAST NOTIFICATION ---------- */
+  .toast-notification {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111215;
+    color: #ffffff;
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 10000;
+    transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .toast-notification.show {
+    bottom: 40px;
+  }
+  .toast-icon {
+    width: 18px;
+    height: 18px;
+    background: #10B981;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:40px 48px;border-top:1px solid var(--line);
+    font-size:13px;color:var(--muted);
+  }
+  .footer-links{display:flex;gap:32px;}
+  .footer-links a{transition:color 0.2s ease;}
+  .footer-links a:hover{color:var(--text);}
+
+  /* ---------- RESPONSIVE GRID ---------- */
+  @media(max-width:1024px){
+    .work-grid{grid-template-columns:repeat(2, 1fr); gap:20px;}
+    .work-card.bento-large, .work-card.bento-medium, .work-card.bento-small { grid-column: span 1; }
+  }
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr; gap:40px;}
+    .deck{height:300px; max-width:400px; margin:0 auto;}
+    .nav-links{display:none;}
+    .process-grid{grid-template-columns:1fr; gap:20px;}
+    .tool-row { border-radius: 20px; padding: 16px; flex-direction: column; align-items: flex-start; gap: 16px; }
+    .tool-right { align-self: flex-end; }
+  }
+  @media(max-width:600px){
+    section{padding:90px 24px;}
+    header.hero{padding:140px 24px 60px;}
+    .work-grid{grid-template-columns:1fr;}
+    nav{padding:18px 24px;}
+    .stats-row{gap:32px;}
+    footer{flex-direction:column; gap:20px; text-align:center;}
+    .contact-card { padding: 36px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="custom-cursor"></div>
+
+<!-- Success Toast -->
+<div id="successToast" class="toast-notification">
+  <div class="toast-icon">✓</div>
+  <span>Message sent successfully!</span>
+</div>
+
+<nav>
+  <div class="logo"><span class="dot"></span>SAVONGRAPHIC</div>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#process">Process</a>
+    <a href="#toolkit">Toolkit</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a href="#contact" class="nav-cta">Start a project</a>
+</nav>
+
+<header class="hero">
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">Thumbnail &amp; Visual Design Studio</div>
+      <h1 class="headline">
+        <span class="line">Thumbnails</span>
+        <span class="line">that <span class="fill">stop</span></span>
+        <span class="line">the scroll.</span>
+      </h1>
+      <p class="hero-sub">We design high-CTR YouTube thumbnails for fast-growing creators. Bold composition, flawless visual hierarchy, and absolute performance.</p>
+      <div class="hero-actions">
+        <a href="#work" class="btn-primary">View our work →</a>
+        <a href="#contact" class="btn-ghost">Book a slot</a>
+      </div>
+      <div class="stats-row">
+        <div><div class="stat-num">12+</div><div class="stat-label">Channels served</div></div>
+        <div><div class="stat-num">1.4K+</div><div class="stat-label">Designs shipped</div></div>
+        <div><div class="stat-num">24H</div><div class="stat-label">Turnaround</div></div>
+      </div>
+    </div>
+    <div class="deck">
+      <div class="card c1"><span class="tag">CONCEPT A</span></div>
+      <div class="card c2"><span class="tag">CONCEPT B</span></div>
+      <div class="card c3">
+        <span class="ctr">+38% CTR</span>
+        <span class="tag">SAVONGRAPHIC</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="work">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-eyebrow">Selected work</span>
+      <h2 class="section-title">High-CTR Showcase</h2>
+    </div>
+    <p class="section-desc">A curated selection of thumbnails designed by Savongraphic team to maximize performance.</p>
+  </div>
+  
+  <div class="work-grid">
+    <div class="work-card bento-large reveal">
+      <div class="thumb">
+        <img src="images/thumb1.jpg" alt="Design 1">
+        <span class="thumb-badge">EXPLAINER</span>
+        <span class="thumb-ctr">+41%</span>
+        <div class="play"></div>
+        <div class="thumb-title">Why This Changes<br>Everything</div>
+      </div>
+      <div class="work-meta"><span class="niche">Whiteboard explainer</span><span class="arrow">↗</span></div>
+    </div>
+
+    <div class="work-card bento-medium reveal">
+      <div class="thumb">
+        <img src="images/thumb2.jpg" alt="Design 2">
+        <span class="thumb-badge">FINANCE</span>
+        <span class="thumb-ctr">+29%</span>
+        <div class="play"></div>
+        <div class="thumb-title">The $10K<br>Mistake</div>
+      </div>
+      <div class="work-meta"><span class="niche">Money &amp; finance</span><span class="arrow">↗</span></div>
+    </div>
+
+    <div class="work-card bento-medium reveal">
+      <div class="thumb">
+        <img src="images/thumb3.jpg" alt="Design 3">
+        <span class="thumb-badge">TECH</span>
+        <span class="thumb-ctr">+52%</span>
+        <div class="play"></div>
+        <div class="thumb-title">I Tried It For<br>30 Days</div>
+      </div>
+      <div class="work-meta"><span class="niche">Tech review</span><span class="arrow">↗</span></div>
+    </div>
+
+    <div class="work-card bento-large reveal">
+      <div class="thumb">
+        <img src="images/thumb4.jpg" alt="Design 4">
+        <span class="thumb-badge">EDUCATION</span>
+        <span class="thumb-ctr">+33%</span>
+        <div class="play"></div>
+        <div class="thumb-title">Explained in<br>60 Seconds</div>
+      </div>
+      <div class="work-meta"><span class="niche">Education</span><span class="arrow">↗</span></div>
+    </div>
+
+    <div class="work-card bento-small reveal">
+      <div class="thumb">
+        <img src="images/thumb5.jpg" alt="Design 5">
+        <span class="thumb-badge">VLOG</span>
+        <span class="thumb-ctr">+18%</span>
+        <div class="play"></div>
+        <div class="thumb-title">The Truth<br>Nobody Says</div>
+      </div>
+      <div class="work-meta"><span class="niche">Personal brand</span><span class="arrow">↗</span></div>
+    </div>
+
+    <div class="work-card bento-small reveal">
+      <div class="thumb">
+        <img src="images/thumb6.jpg" alt="Design 6">
+        <span class="thumb-badge">DEEP DIVE</span>
+        <span class="thumb-ctr">+46%</span>
+        <div class="play"></div>
+        <div class="thumb-title">How It Actually<br>Works</div>
+      </div>
+      <div class="work-meta"><span class="niche">Documentary</span><span class="arrow">↗</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span>Composition <em>·</em> Color Theory <em>·</em> Visual Hierarchy <em>·</em> Fast Turnaround <em>·</em> Composition <em>·</em> Color Theory <em>·</em> Visual Hierarchy <em>·</em> Fast Turnaround <em>·</em></span>
+  </div>
+</div>
+
+<section id="process" class="process">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-eyebrow">The Workflow</span>
+      <h2 class="section-title">How we align for growth</h2>
+    </div>
+  </div>
+  
+  <div class="process-grid">
+    <div class="process-card reveal">
+      <div class="process-num">01</div>
+      <div class="process-name">Briefing</div>
+      <div class="process-desc">We analyze your title, video script outline, and visual references. We ask alignment questions early to bypass heavy revisions later.</div>
+    </div>
+    <div class="process-card reveal">
+      <div class="process-num">02</div>
+      <div class="process-name">Concept</div>
+      <div class="process-desc">We structure fast composition layouts maps — perfecting focal positioning, text hierarchy, and element balance first.</div>
+    </div>
+    <div class="process-card reveal">
+      <div class="process-num">03</div>
+      <div class="process-name">Design</div>
+      <div class="process-desc">High-fidelity production matching your exact channel's aesthetic — utilizing precise color grades and lighting setups.</div>
+    </div>
+    <div class="process-card reveal">
+      <div class="process-num">04</div>
+      <div class="process-name">Delivery</div>
+      <div class="process-desc">Final pristine 1280×720 renders along with neatly packed master source files delivered in under 24 hours.</div>
+    </div>
+  </div>
+</section>
+
+<section id="toolkit" class="toolkit">
+  <div class="toolkit-intro reveal">
+    <span class="section-eyebrow">Our Arsenal</span>
+    <h2 class="section-title" style="font-family:'Anton',sans-serif; text-transform:uppercase; font-size:clamp(32px,4vw,56px);">Powerful Tools, Exceptional Results.</h2>
+    <p>The right tools combined with creativity to deliver high-impact visuals.</p>
+  </div>
+
+  <div class="toolkit-container">
+    <div class="tool-row reveal" style="--progress-width: 95%;">
+      <div class="tool-progress-bg"></div>
+      <div class="tool-left">
+        <div class="tool-icon ps">Ps</div>
+        <div class="tool-details">
+          <div class="tool-name">Adobe Photoshop</div>
+          <div class="tool-desc">Where creativity meets precision in every design.</div>
+        </div>
+      </div>
+      <div class="tool-right">
+        <div class="tool-perc">95%</div>
+      </div>
+    </div>
+
+    <div class="tool-row reveal" style="--progress-width: 90%;">
+      <div class="tool-progress-bg"></div>
+      <div class="tool-left">
+        <div class="tool-icon ai">Ai</div>
+        <div class="tool-details">
+          <div class="tool-name">Adobe Illustrator</div>
+          <div class="tool-desc">Precision vector design for clean and scalable visuals.</div>
+        </div>
+      </div>
+      <div class="tool-right">
+        <div class="tool-perc">90%</div>
+      </div>
+    </div>
+
+    <div class="tool-row reveal" style="--progress-width: 85%;">
+      <div class="tool-progress-bg"></div>
+      <div class="tool-left">
+        <div class="tool-icon ev">Ev</div>
+        <div class="tool-details">
+          <div class="tool-name">Envato Elements</div>
+          <div class="tool-desc">Premium assets and creative resources to support high-quality design work.</div>
+        </div>
+      </div>
+      <div class="tool-right">
+        <div class="tool-perc">85%</div>
+      </div>
+    </div>
+
+    <div class="tool-row reveal" style="--progress-width: 80%;">
+      <div class="tool-progress-bg"></div>
+      <div class="tool-left">
+        <div class="tool-icon gpt">Gc</div>
+        <div class="tool-details">
+          <div class="tool-name">ChatGPT</div>
+          <div class="tool-desc">Ideal for trend research, title ideas, script prompts, and visual references.</div>
+        </div>
+      </div>
+      <div class="tool-right">
+        <div class="tool-perc">80%</div>
+      </div>
+    </div>
+
+    <div class="tool-row reveal" style="--progress-width: 75%;">
+      <div class="tool-progress-bg"></div>
+      <div class="tool-left">
+        <div class="tool-icon nb">Nb</div>
+        <div class="tool-details">
+          <div class="tool-name">Nano Banana Pro</div>
+          <div class="tool-desc">A powerful AI tool that helps enhance visuals and explore new creative perspectives in design.</div>
+        </div>
+      </div>
+      <div class="tool-right">
+        <div class="tool-perc">75%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT SECTION CONNECTED TO FORMSPREE -->
+<section id="contact" class="contact-section">
+  <div class="contact-card reveal">
+    <div class="contact-badge">Contact</div>
+    <h2 class="contact-title">Get In Touch</h2>
+    <p class="contact-subtitle">Have a project in mind? I'll respond within 5 hours.</p>
+    
+    <form id="contactForm" class="contact-form" action="https://formspree.io/f/maqgljoj" method="POST">
+      <input type="text" name="name" class="contact-input" placeholder="Your Name" required>
+      <input type="email" name="email" class="contact-input" placeholder="Your@email.com" required>
+      <input type="url" name="youtube_channel" class="contact-input" placeholder="Link to Your Youtube Channel" required>
+      <input type="text" name="budget" class="contact-input" placeholder="What is your budget per thumbnail (USD)" required>
+      <textarea name="message" class="contact-input" placeholder="Anything Else I Should Know?"></textarea>
+      <button type="submit" id="submitBtn" class="contact-btn">Send message</button>
+    </form>
+    
+    <a href="mailto:savongraphics@gmail.com" class="contact-footer-email">savongraphics@gmail.com</a>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 Savongraphic Studio</div>
+  <div class="footer-links">
+    <a href="#">Instagram</a>
+    <a href="#">Behance</a>
+    <a href="#">Twitter</a>
+  </div>
+</footer>
+
+<script>
+  // Form Submission Handling with AJAX + Toast Alert
+  const form = document.getElementById("contactForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const toast = document.getElementById("successToast");
+
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault(); 
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Sending...";
+
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        // Show Animated Toast Alert
+        toast.classList.add("show");
+        form.reset(); 
+        
+        // Hide Toast after 4 seconds
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 4000);
+      } else {
+        alert("Oops! Something went wrong with the form submission.");
+      }
+    } catch (error) {
+      alert("Error sending message. Check your network connection and try again.");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Send message";
+    }
+  });
+
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // Parallax background glow
+  const glow1 = document.querySelector('.glow-1');
+  const glow2 = document.querySelector('.glow-2');
+  window.addEventListener('mousemove', (e)=>{
+    const x = (e.clientX / window.innerWidth - 0.5) * 50;
+    const y = (e.clientY / window.innerHeight - 0.5) * 50;
+    if(glow1 && glow2) {
+      glow1.style.transform = `translate(${x}px, ${y}px)`;
+      glow2.style.transform = `translate(${-x}px, ${-y}px)`;
+    }
+  });
+
+  // Nav shrink
+  const navEl = document.querySelector('nav');
+  window.addEventListener('scroll', ()=>{
+    if(window.scrollY > 40){ 
+      navEl.style.padding = '16px 48px';
+      navEl.style.background = 'rgba(6, 7, 9, 0.85)';
+    } else { 
+      navEl.style.padding = '24px 48px'; 
+      navEl.style.background = 'rgba(6, 7, 9, 0.6)';
+    }
+  });
+
+  // Custom Cursor
+  const cursor = document.querySelector('.custom-cursor');
+  window.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    cursor.style.opacity = '1'; 
+  });
+  document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+
+  const interactiveElements = document.querySelectorAll('a, .work-card, .btn-primary, .btn-ghost, .nav-cta, .process-card, .tool-row, .contact-input, .contact-btn');
+  interactiveElements.forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+  });
+
+  // Process Box Mouse Tracking
+  const processCards = document.querySelectorAll('.process-card');
+  processCards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
+</script>
+
+</body>
+</html>
