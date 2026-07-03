@@ -178,6 +178,8 @@
     display:flex;align-items:flex-end;padding:18px;
     font-family:'Anton',sans-serif;
     transition:transform .5s cubic-bezier(.2,.8,.2,1);
+    background-size: cover !important;
+    background-position: center !important;
   }
   .card .tag{
     font-family:'JetBrains Mono',monospace;font-weight:600;font-size:11px;
@@ -190,16 +192,10 @@
     padding:6px 10px;border-radius:999px;
     display:flex;align-items:center;gap:6px;
   }
-  ..card{
-    background-size: cover !important;
-    background-position: center !important;
-  }
   .card.c1{background: linear-gradient(rgba(6,7,9,0.3), rgba(6,7,9,0.5)), url('images/thumb1.jpg'); transform:rotate(-9deg) translate(-60px,10px); z-index:1;}
   .card.c2{background: linear-gradient(rgba(6,7,9,0.2), rgba(6,7,9,0.4)), url('images/thumb2.jpg'); transform:rotate(6deg) translate(50px,-10px); z-index:2;}
   .card.c3{background: linear-gradient(rgba(6,7,9,0.1), rgba(6,7,9,0.3)), url('images/thumb3.jpg'); transform:rotate(-2deg) translate(0,0); z-index:3; box-shadow:0 40px 80px -20px rgba(255,59,92,0.25);}
-  .deck:hover .card.c1{transform:rotate(-14deg) translate(-90px,20px);}
-  .deck:hover .card.c2{transform:rotate(10deg) translate(80px,-20px);}
-  .deck:hover .card.c3{transform:rotate(0deg) translate(0,-10px) scale(1.02);}
+  
   .deck:hover .card.c1{transform:rotate(-14deg) translate(-90px,20px);}
   .deck:hover .card.c2{transform:rotate(10deg) translate(80px,-20px);}
   .deck:hover .card.c3{transform:rotate(0deg) translate(0,-10px) scale(1.02);}
@@ -951,122 +947,60 @@
   </div>
 </section>
 
-<!-- CONTACT SECTION CONNECTED TO FORMSPREE -->
 <section id="contact" class="contact-section">
-  <div class="contact-card reveal">
-    <div class="contact-badge">Contact</div>
-    <h2 class="contact-title">Get In Touch</h2>
-    <p class="contact-subtitle">Have a project in mind? I'll respond within 5 hours.</p>
+  <div class="contact-card">
+    <div class="contact-badge">ONLINE &amp; AVAILABLE</div>
+    <h2 class="contact-title">Let's make videos click.</h2>
+    <p class="contact-subtitle">Get high-performance designs tailored for your brand.</p>
     
-    <form id="contactForm" class="contact-form" action="https://formspree.io/f/maqgljoj" method="POST">
-      <input type="text" name="name" class="contact-input" placeholder="Your Name" required>
-      <input type="email" name="email" class="contact-input" placeholder="Your@email.com" required>
-      <input type="url" name="youtube_channel" class="contact-input" placeholder="Link to Your Youtube Channel" required>
-      <input type="text" name="budget" class="contact-input" placeholder="What is your budget per thumbnail (USD)" required>
-      <textarea name="message" class="contact-input" placeholder="Anything Else I Should Know?"></textarea>
-      <button type="submit" id="submitBtn" class="contact-btn">Send message</button>
+    <form class="contact-form">
+      <input type="text" placeholder="Your Name" class="contact-input" required>
+      <input type="email" placeholder="Your Email" class="contact-input" required>
+      <textarea placeholder="Tell us about your channel..." class="contact-input" required></textarea>
+      <button type="submit" class="contact-btn">Send Message</button>
     </form>
     
-    <a href="mailto:savongraphics@gmail.com" class="contact-footer-email">savongraphics@gmail.com</a>
+    <a href="mailto:hello@savongraphic.com" class="contact-footer-email">hello@savongraphic.com</a>
   </div>
 </section>
 
 <footer>
-  <div>© 2026 Savongraphic Studio</div>
+  <div>&copy; 2026 Savongraphic. All rights reserved.</div>
   <div class="footer-links">
-    <a href="#">Instagram</a>
-    <a href="#">Behance</a>
-    <a href="#">Twitter</a>
+    <a href="#work">Work</a>
+    <a href="#process">Process</a>
+    <a href="#toolkit">Toolkit</a>
   </div>
 </footer>
 
 <script>
-  // Form Submission Handling with AJAX + Toast Alert
-  const form = document.getElementById("contactForm");
-  const submitBtn = document.getElementById("submitBtn");
-  const toast = document.getElementById("successToast");
-
-  form.addEventListener("submit", async function(e) {
-    e.preventDefault(); 
-    
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Sending...";
-
-    const formData = new FormData(form);
-
-    try {
-      const response = await fetch(form.action, {
-        method: form.method,
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (response.ok) {
-        // Show Animated Toast Alert
-        toast.classList.add("show");
-        form.reset(); 
-        
-        // Hide Toast after 4 seconds
-        setTimeout(() => {
-          toast.classList.remove("show");
-        }, 4000);
-      } else {
-        alert("Oops! Something went wrong with the form submission.");
+  // Smooth scroll and basic animation triggers if needed
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
       }
-    } catch (error) {
-      alert("Error sending message. Check your network connection and try again.");
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Send message";
-    }
-  });
-
-  // Reveal on scroll
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
-  },{threshold:0.12});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-  // Parallax background glow
-  const glow1 = document.querySelector('.glow-1');
-  const glow2 = document.querySelector('.glow-2');
-  window.addEventListener('mousemove', (e)=>{
-    const x = (e.clientX / window.innerWidth - 0.5) * 50;
-    const y = (e.clientY / window.innerHeight - 0.5) * 50;
-    if(glow1 && glow2) {
-      glow1.style.transform = `translate(${x}px, ${y}px)`;
-      glow2.style.transform = `translate(${-x}px, ${-y}px)`;
-    }
-  });
-
-  // Nav shrink
-  const navEl = document.querySelector('nav');
-  window.addEventListener('scroll', ()=>{
-    if(window.scrollY > 40){ 
-      navEl.style.padding = '16px 48px';
-      navEl.style.background = 'rgba(6, 7, 9, 0.85)';
-    } else { 
-      navEl.style.padding = '24px 48px'; 
-      navEl.style.background = 'rgba(6, 7, 9, 0.6)';
-    }
-  });
+    });
+  }, { threshold: 0.1 });
+  
+  reveals.forEach(reveal => observer.observe(reveal));
 
   // Custom Cursor
   const cursor = document.querySelector('.custom-cursor');
-  window.addEventListener('mousemove', (e) => {
+  document.addEventListener('mousemove', (e) => {
     cursor.style.left = e.clientX + 'px';
     cursor.style.top = e.clientY + 'px';
-    cursor.style.opacity = '1'; 
-  });
-  document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
-
-  const interactiveElements = document.querySelectorAll('a, .work-card, .btn-primary, .btn-ghost, .nav-cta, .process-card, .tool-row, .contact-input, .contact-btn');
-  interactiveElements.forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+    cursor.style.opacity = 1;
   });
 
-  // Process Box Mouse Tracking
+  const hoverElements = document.querySelectorAll('a, .work-card, .btn-primary, .btn-ghost, .nav-cta, .process-card, .tool-row, .contact-input, .contact-btn');
+  hoverElements.forEach(elem => {
+    elem.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+    elem.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+  });
+
+  // Card Process Mouse Effect
   const processCards = document.querySelectorAll('.process-card');
   processCards.forEach(card => {
     card.addEventListener('mousemove', (e) => {
@@ -1078,6 +1012,5 @@
     });
   });
 </script>
-
 </body>
 </html>
