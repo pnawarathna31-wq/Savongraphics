@@ -224,10 +224,10 @@
   .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(0.16, 1, 0.3, 1), transform .8s cubic-bezier(0.16, 1, 0.3, 1);}
   .reveal.in{opacity:1;transform:translateY(0);}
 
-  /* ---------- BENTO GRID SHOWCASE ---------- */
+  /* ---------- STANDARD GRID SHOWCASE ---------- */
   .work-grid{
     display:grid;
-    grid-template-columns:repeat(6, 1fr);
+    grid-template-columns:repeat(3, 1fr);
     gap:24px;
   }
   .work-card{
@@ -240,10 +240,6 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.02);
     transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  
-  .work-card.bento-large { grid-column: span 4; }
-  .work-card.bento-medium { grid-column: span 2; }
-  .work-card.bento-small { grid-column: span 3; }
 
   .work-card:hover{
     transform:translateY(-6px) scale(1.01);
@@ -658,7 +654,6 @@
   /* ---------- RESPONSIVE GRID ---------- */
   @media(max-width:1024px){
     .work-grid{grid-template-columns:repeat(2, 1fr); gap:20px;}
-    .work-card.bento-large, .work-card.bento-medium, .work-card.bento-small { grid-column: span 1; }
   }
   @media(max-width:900px){
     .hero-grid{grid-template-columns:1fr; gap:40px;}
@@ -750,9 +745,9 @@
   </div>
   
   <div class="work-grid">
-    <div class="work-card bento-large reveal">
+    <div class="work-card reveal">
       <div class="thumb">
-        <img src="images/thumb1.jpg" alt="Design 1">
+        <img src="1783705171813.jpg" alt="Design 1">
         <span class="thumb-badge">EXPLAINER</span>
         <span class="thumb-ctr">+41%</span>
         <div class="play"></div>
@@ -761,7 +756,7 @@
       <div class="work-meta"><span class="niche">Whiteboard explainer</span><span class="arrow">↗</span></div>
     </div>
 
-    <div class="work-card bento-medium reveal">
+    <div class="work-card reveal">
       <div class="thumb">
         <img src="images/thumb2.jpg" alt="Design 2">
         <span class="thumb-badge">FINANCE</span>
@@ -772,7 +767,7 @@
       <div class="work-meta"><span class="niche">Money &amp; finance</span><span class="arrow">↗</span></div>
     </div>
 
-    <div class="work-card bento-medium reveal">
+    <div class="work-card reveal">
       <div class="thumb">
         <img src="images/thumb3.jpg" alt="Design 3">
         <span class="thumb-badge">TECH</span>
@@ -783,7 +778,7 @@
       <div class="work-meta"><span class="niche">Tech review</span><span class="arrow">↗</span></div>
     </div>
 
-    <div class="work-card bento-large reveal">
+    <div class="work-card reveal">
       <div class="thumb">
         <img src="images/thumb4.jpg" alt="Design 4">
         <span class="thumb-badge">EDUCATION</span>
@@ -794,7 +789,7 @@
       <div class="work-meta"><span class="niche">Education</span><span class="arrow">↗</span></div>
     </div>
 
-    <div class="work-card bento-small reveal">
+    <div class="work-card reveal">
       <div class="thumb">
         <img src="images/thumb5.jpg" alt="Design 5">
         <span class="thumb-badge">VLOG</span>
@@ -805,7 +800,7 @@
       <div class="work-meta"><span class="niche">Personal brand</span><span class="arrow">↗</span></div>
     </div>
 
-    <div class="work-card bento-small reveal">
+    <div class="work-card reveal">
       <div class="thumb">
         <img src="images/thumb6.jpg" alt="Design 6">
         <span class="thumb-badge">DEEP DIVE</span>
